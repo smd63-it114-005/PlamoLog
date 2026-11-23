@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlamoLog - Register</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo">Plamo<span>Log</span></a>
+        <div class="nav-links">
+            <a href="index.html">Catalog</a>
+            <a href="login.html">Login</a>
+            <a href="register.html" class="active">Register</a>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <h2>Create an Account</h2>
+        <form class="auth-form" style="margin-top: 1.5rem;">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" placeholder="GundamBuilder99" required>
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" placeholder="builder@example.com" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" placeholder=".........." required>
+            </div>
+            <button type="submit" class="btn-primary">Register Account</button>
+        </form>
+    </div>
+
+    <script>
+        const regForm = document.querySelector('.auth-form');
+        const msgBox = document.createElement('p');
+        msgBox.style.marginTop = '1rem';
+        msgBox.style.textAlign = 'center';
+        msgBox.style.fontWeight = '600';
+        regForm.appendChild(msgBox);
+
+        regForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            msgBox.style.color = '#38bdf8';
+            msgBox.textContent = 'Creating account...';
+
+            const username = regForm.querySelector('input[type="text"]').value.trim();
+            const email = regForm.querySelector('input[type="email"]').value.trim();
+            const password = regForm.querySelector('input[type="password"]').value;
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    msgBox.style.color = '#10b981';
+                    msgBox.textContent = 'Account created! Redirecting to login...';
+                    setTimeout(() => { window.location.href = 'login.html'; }, 1200);
+                } else {
+                    msgBox.style.color = '#f97316';
+                    msgBox.textContent = data.error || 'Registration failed.';
+                }
+            } catch (err) {
+                msgBox.style.color = '#ef4444';
+                msgBox.textContent = 'Could not reach backend API.';
+            }
+        });
+    </script>
+</body>
+</html>
